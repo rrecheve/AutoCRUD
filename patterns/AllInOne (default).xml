@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+
+<PATTERN id="p0" name="AllInOne (default)"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	 xsi:noNamespaceSchemaLocation="schema.xsd">
+	
+	<!-- PAGES SECTION-->
+	<PAGES>
+		<page id="CRUDPage" name="CRUDPage" landmark="true" x="30" y="30">
+			<xor id="XORPage" name="Alternative" x="0" y="0">
+				<page id="DefaultPage" name="DefaultPage" default="true" x="30" y="30">
+					<noOpContentUnit id="noOpContentUnit" name="New" x="5" y="5"/>
+					<multiMessageUnit id="multiMessageUnit" name="MultiMessageUnit" x="0" y="150"/>
+					<powerIndexUnit id="powerIndexUnit" name="PowerIndexUnit" x="150" y="0"/>
+				</page>
+
+				<page id="DetailsPage" name="Details" landmark="true" x="400" y="5">
+					<dataUnit id="dataUnit" name="DataUnit" x="0" y="0"/>					
+				</page>
+
+				<page id="FormPage" name="Form" landmark="true" x="5" y="300">
+					<entryUnit id="entryUnit" name="EntryUnit" x="200" y="150"/>	
+					<selectorUnit id="selectorEntity" name="Selector" type="keyCondition" x="100" y="5"/>			
+				</page>
+			</xor>
+		</page>
+	</PAGES>		
+
+
+	<!-- UNITS OUTSIDE OF ANY PAGE -->
+	<OUTSIDEUNITS>
+		<createUnit id="createUnit" name="CreateUnit" x="700" y="500"/>
+		<deleteUnit id="deleteUnit" name="DeleteUnit" x="700" y="300"/>
+		<updateUnit id="updateUnit" name="UpdateUnit"  x="700" y="800"/>
+		<isNotNullUnit id="isNotNullUnit" name="New ..." x="700" y="650"/>
+	</OUTSIDEUNITS>
+
+
+	<!-- LINKS SECTION -->
+	<LINKS>
+		<normalNavigationFlow id= "nnf1" name="Close" sourceId="dataUnit" targetId="multiMessageUnit"/>
+		<normalNavigationFlow id= "nnf2" name="Cancel" sourceId="entryUnit" targetId="multiMessageUnit" validate="false"/>
+		<normalNavigationFlow id= "nnf3" name="New" sourceId="noOpContentUnit" targetId="selectorEntity" type="fixedValue"/>
+		<normalNavigationFlow id= "nnf4" name="View" sourceId="powerIndexUnit" targetId="dataUnit"/>
+		<normalNavigationFlow id= "nnf5" name="Modify" sourceId="powerIndexUnit" targetId="selectorEntity"/>
+		<normalNavigationFlow id= "nnf6" name="Delete" sourceId="powerIndexUnit" targetId="deleteUnit"/>
+		<normalNavigationFlow id= "nnf7" name="Accept" sourceId="entryUnit" targetId="isNotNullUnit" type="isNotNull"/>
+
+		<okLink id="okDelete" sourceId="deleteUnit" targetId="multiMessageUnit" message="Data deleted correctly"/>
+		<okLink id="okNN" sourceId="isNotNullUnit" targetId="updateUnit"/>
+
+		<koLink id="koDelete" sourceId="deleteUnit" targetId="multiMessageUnit" message="Failed deleting data"/>
+		<koLink id="koCreate" sourceId="createUnit" targetId="multiMessageUnit" message="Failed creating data"/>
+		<koLink id="koUpdate" sourceId="updateUnit" targetId="multiMessageUnit" message="Failed modifying data"/>
+		<koLink id="koNN" sourceId="isNotNullUnit" targetId="createUnit"/>
+
+
+		<dataFlow id="df1" name="Load" sourceId="selectorEntity" targetId="entryUnit" type="unitToEntry"/>
+		<dataFlow id="df2" name="Load" sourceId="entryUnit" targetId="createUnit" type="entryToCreate"/>
+		<dataFlow id="df3" name="Load" sourceId="entryUnit" targetId="updateUnit" type="entryToUpdate"/>
+	</LINKS>
+
+
+	<!-- RELATIONS SECTION -->
+	<RELATIONS> <!-- Common section for 1:1, 1:N and N:M relations -->
+		<ALL> <!-- All relations -->
+			<selectorUnit id="selector#" name="selector#" parentId="FormPage" x="300#" y="0"/>
+			<dataFlow id="flowSelectorForm#" name="Load" sourceId="selector#" targetId="entryUnit" type="preload"/>
+		</ALL>
+
+		<LAST> <!-- Last relation (used to close operations chain) -->
+			<okLink id="okConnect" sourceId="createUnit" targetId="multiMessageUnit" message="Data created correctly"/>	
+			<okLink id="okReconnect" sourceId="updateUnit" targetId="multiMessageUnit" message="Data modified correctly"/>
+		</LAST>
+	</RELATIONS>
+
+	<NMRELATIONS> <!-- Specific section only for N:M relations (Replaces RELATIONS)-->
+		<ALL> <!-- All N:M relations -->
+			<selectorUnit id="selector-#" name="selector#" parentId="FormPage" x="300#" y="0"/>
+			<dataFlow id="flowSelectorForm-#" name="Load" sourceId="selector-#" targetId="entryUnit" type="preload"/>
+			
+			<selectorUnit id="selectorNM%" name="selectorNM%" parentId="FormPage" type="roleCondition" x="0" y="130%"/>
+			<dataFlow id="flowSelectSelect%" name="Load" sourceId="selectorEntity" targetId="selectorNM%"/>
+			<dataFlow id="flowSelectEntry%" name="Load" sourceId="selectorNM%" targetId="entryUnit" type="unitToEntryRole"/>
+
+			<connectUnit id="connect%" name="connect%" x="850%" y="500"/>
+			<dataFlow id="flowFormConnect%" name="Load" sourceId="entryUnit" targetId="connect%" type="entryToConnect"/>
+			<koLink id="koConnect%" sourceId="connect%" targetId="multiMessageUnit" message="Failed creating/modifying data"/>
+
+			<reconnectUnit id="reconnect%" name="reconnect%" x="850%" y="800"/>
+			<dataFlow id="flowFormReconnect%" name="Load" sourceId="entryUnit" targetId="reconnect%" type="entryToReconnect"/>
+			<koLink id="koReconnect%" sourceId="reconnect%" targetId="multiMessageUnit" message="Failed modifying data"/>
+		</ALL>
+
+		<FIRST> <!-- First N:M relation (used to start operations chain) -->
+			<okLink id="okFirstConnect%" sourceId="createUnit" targetId="connect%"/>	
+			<okLink id="okFirstReconnect%" sourceId="updateUnit" targetId="reconnect%"/>	
+		</FIRST>
+
+		<REMAINING> <!-- Second and subsequent N:M relations (used to continue operations chain) -->
+			<okLink id="okConnect%" sourceId="connect%-1" targetId="connect%"/>
+			<okLink id="okReconnect%" sourceId="reconnect%-1" targetId="reconnect%"/>
+		</REMAINING>
+
+		<LAST> <!-- Last relation (used to close operations chain) -->
+			<okLink id="okConnect%+1" sourceId="connect%" targetId="multiMessageUnit" message="Data created correctly"/>	
+			<okLink id="okReconnect%+1" sourceId="reconnect%" targetId="multiMessageUnit" message="Data modified correctly"/>
+		</LAST>
+	</NMRELATIONS>
+
+</PATTERN>
+
+
+	<!-- # = iterative number for each relation -->
+	<!-- % = iterative number for each NM relation -->
+

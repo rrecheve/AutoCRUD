@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<PATTERN id="p4" name="Delete (default)"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	 xsi:noNamespaceSchemaLocation="schema.xsd">
+	
+	<!-- PAGES SECTION-->
+	<PAGES>
+		<page id="DeletePage" name="Delete Page" landmark="true" x="30" y="30">
+			<powerIndexUnit id="powerIndexUnit" name="PowerIndexUnit" x="0" y="0"/>
+			<multiMessageUnit id="multiMessageUnit" name="MultiMessageUnit" x="0" y="100"/>
+		</page>
+	</PAGES>		
+
+
+	<!-- UNITS OUTSIDE OF ANY PAGE -->
+	<OUTSIDEUNITS>
+		<deleteUnit id="deleteUnit" name="DeleteUnit" x="300" y="30"/>
+	</OUTSIDEUNITS>
+
+
+	<!-- LINKS SECTION -->
+	<LINKS>
+		<normalNavigationFlow id="nnfDelete" name="Delete" sourceId="powerIndexUnit" targetId="deleteUnit"/>
+		<koLink id="koDelete" sourceId="deleteUnit" targetId="multiMessageUnit" message="Failed deleting data"/>
+		<okLink id="okDelete" sourceId="deleteUnit" targetId="multiMessageUnit" message="Data deleted correctly"/>
+	</LINKS>
+
+</PATTERN>

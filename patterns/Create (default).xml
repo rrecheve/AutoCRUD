@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<PATTERN id="p1" name="Create (default)"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	 xsi:noNamespaceSchemaLocation="schema.xsd">
+	
+	<!-- PAGES SECTION-->
+	<PAGES>
+		<page id="CreatePage" name="Create Page" landmark="true" x="30" y="30">
+			<entryUnit id="entryUnit" name="EntryUnit" x="150" y="0"/>
+			<multiMessageUnit id="multiMessageUnit" name="MultiMessageUnit" x="150" y="100"/>
+		</page>
+	</PAGES>		
+
+
+	<!-- UNITS OUTSIDE OF ANY PAGE -->
+	<OUTSIDEUNITS>
+		<createUnit id="createUnit" name="CreateUnit" x="450" y="30"/>
+	</OUTSIDEUNITS>
+
+
+	<!-- LINKS SECTION -->
+	<LINKS>
+		<normalNavigationFlow id="nnfLoad" name="Load" sourceId="entryUnit" targetId="createUnit" type="entryToCreate"/>
+		<koLink id="koCreate" sourceId="createUnit" targetId="multiMessageUnit" message="Failed creating data"/>
+	</LINKS>
+
+
+	<!-- RELATIONS SECTION -->
+	<RELATIONS> <!-- Common section for 1:1, 1:N and N:M relations -->
+		<ALL> <!-- All relations -->
+			<selectorUnit id="selector#" name="selector#" parentId="CreatePage" x="0" y="0#"/>
+			<dataFlow id="flowSelectorForm#" name="Load" sourceId="selector#" targetId="entryUnit" type="preload"/>
+		</ALL>
+
+		<LAST> <!-- Last relation (used to close operations chain) -->
+			<okLink id="okConnect" sourceId="createUnit" targetId="multiMessageUnit" message="Data created correctly"/>
+		</LAST>
+	</RELATIONS>
+
+	<NMRELATIONS> <!-- Specific section only for N:M relations (Replaces RELATIONS)-->
+		<ALL> <!-- All N:M relations -->
+			<selectorUnit id="selector #" name="selector#" parentId="CreatePage" x="0" y="0#"/>
+			<dataFlow id="flowSelectorForm #" name="Load" sourceId="selector #" targetId="entryUnit" type="preload"/>
+
+			<connectUnit id="connect%" name="connect%" x="450" y="130%"/>
+			<dataFlow id="flowFormConnect%" name="Load" sourceId="entryUnit" targetId="connect%" type="entryToConnect"/>
+
+			<koLink id="koConnect%" sourceId="connect%" targetId="multiMessageUnit" message="Failed creating data"/>
+		</ALL>
+
+		<FIRST> <!-- First N:M relation (used to start operations chain) -->
+			<okLink id="okFirstConnect%" sourceId="createUnit" targetId="connect%" message=""/>	
+		</FIRST>
+
+		<REMAINING> <!-- Second and subsequent N:M relations (used to continue operations chain) -->
+			<okLink id="okConnect%" sourceId="connect%-1" targetId="connect%" message=""/>
+		</REMAINING>
+
+		<LAST> <!-- Last relation (used to close operations chain) -->
+			<okLink id="okConnect%+1" sourceId="connect%" targetId="multiMessageUnit" message="Data created correctly"/>	
+		</LAST>
+	</NMRELATIONS>
+
+</PATTERN>
+
+
+	<!-- # = iterative number for each relation -->
+	<!-- % = iterative number for each NM relation -->
+

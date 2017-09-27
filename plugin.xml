@@ -16,7 +16,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.homeria.webratioassistant.handlers.lanzarCRUD"
+            class="org.homeria.webratioassistant.Launcher"
             commandId="org.homeria.webratioassistant.commands.sampleCommand">
       </handler>
    </extension>
@@ -41,9 +41,9 @@
                   commandId="org.homeria.webratioassistant.commands.sampleCommand"
                   icon="icons/wraicon.gif"
                   id="org.homeria.webratioassistant.menus.sampleCommand"
-                  label="Generar CRUD"
+                  label="WebRatio Assistant v3"
                   mnemonic="S"
-                  tooltip="Generar CRUD">
+                  tooltip="WebRatio Assistant v3">
             </command>
          </menu>
       </menuContribution>
@@ -55,7 +55,7 @@
                   commandId="org.homeria.webratioassistant.commands.sampleCommand"
                   icon="icons/wraicon.gif"
                   id="org.homeria.webratioassistant.toolbars.sampleCommand"
-                  tooltip="Generar CRUD">
+                  tooltip="WebRatio Assistant v3">
             </command>
          </toolbar>
       </menuContribution>

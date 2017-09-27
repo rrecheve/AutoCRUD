@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+
+<PATTERN id="p3" name="Update (default)"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	 xsi:noNamespaceSchemaLocation="schema.xsd">
+	
+	<!-- PAGES SECTION-->
+	<PAGES>
+		<page id="UpdatePage" name="Update Page" landmark="true" x="30" y="30">
+			<entryUnit id="entryUnit" name="EntryUnit" type="preloaded" x="200" y="200"/>
+			<powerIndexUnit id="powerIndexUnit" name="PowerIndexUnit" x="0" y="0"/>
+			<multiMessageUnit id="multiMessageUnit" name="MultiMessageUnit" x="150" y="300"/>
+			<selectorUnit id="selectorEntity" name="selector" type="keyCondition" x="200" y="0"/>
+		</page>
+	</PAGES>		
+
+
+	<!-- UNITS OUTSIDE OF ANY PAGE -->
+	<OUTSIDEUNITS>
+		<updateUnit id="updateUnit" name="UpdateUnit"  x="500" y="170"/>
+	</OUTSIDEUNITS>
+
+
+	<!-- LINKS SECTION -->
+	<LINKS>
+		<normalNavigationFlow id="nnfUpdate" name="Modify" sourceId="powerIndexUnit" targetId="selectorEntity" />
+		<normalNavigationFlow id="nnfEntryUpdate" name="Load" sourceId="entryUnit" targetId="updateUnit" type="entryToUpdate"/>
+		<dataFlow id="dfSelectorEntry" name="Load" sourceId="selectorEntity" targetId="entryUnit" type="unitToEntry"/>
+		<koLink id="koUpdate" sourceId="updateUnit" targetId="multiMessageUnit" message="Failed modifying data"/>
+	</LINKS>
+
+
+	<!-- RELATIONS SECTION -->
+	<RELATIONS> <!-- Common section for 1:1, 1:N and N:M relations -->
+		<ALL> <!-- All relations -->
+			<selectorUnit id="selector#" name="selector#" parentId="UpdatePage" x="300#" y="0"/>
+			<dataFlow id="flowSelectorForm#" name="Load" sourceId="selector#" targetId="entryUnit" type="preload"/>
+		</ALL>
+
+		<LAST> <!-- Last relation (used to close operations chain) -->
+			<okLink id="okReconnect" sourceId="updateUnit" targetId="multiMessageUnit" message="Data modified correctly"/>	
+		</LAST>
+	</RELATIONS>
+
+	<NMRELATIONS> <!-- Specific section only for N:M relations (Replaces RELATIONS)-->
+		<ALL> <!-- All N:M relations -->
+			<selectorUnit id="selector #" name="selector#" parentId="UpdatePage" x="300#" y="0"/>
+			<dataFlow id="flowSelectorForm #" name="Load" sourceId="selector #" targetId="entryUnit" type="preload"/>
+
+			<selectorUnit id="selectorNM%" name="selectorNM%" parentId="UpdatePage" type="roleCondition" x="0" y="150%"/>
+			<dataFlow id="flowSelectSelect%" name="Load" sourceId="selectorEntity" targetId="selectorNM%"/>
+			<dataFlow id="flowSelectEntry%" name="Load" sourceId="selectorNM%" targetId="entryUnit" type="unitToEntryRole"/>
+
+			<reconnectUnit id="reconnect%" name="reconnect%" x="500" y="300%"/>
+			<dataFlow id="flowFormReconnect%" name="Load" sourceId="entryUnit" targetId="reconnect%" type="entryToReconnect"/>
+			<koLink id="koReconnect%" sourceId="reconnect%" targetId="multiMessageUnit" message="Failed modifying data"/>			
+		</ALL>
+
+		<FIRST> <!-- First N:M relation (used to start operations chain) -->
+			<okLink id="okFirstReconnect%" sourceId="updateUnit" targetId="reconnect%" message=""/>
+		</FIRST>
+
+		<REMAINING> <!-- Second and subsequent N:M relations (used to continue operations chain) -->
+			<okLink id="okReconnect%" sourceId="reconnect%-1" targetId="reconnect%" message=""/>
+		</REMAINING>
+
+		<LAST> <!-- Last relation (used to close operations chain) -->
+			<okLink id="okReconnect%+1" sourceId="reconnect%" targetId="multiMessageUnit" message="Data modified correctly"/>
+		</LAST>
+	</NMRELATIONS>
+
+</PATTERN>
+
+
+	<!-- # = iterative number for each relation -->
+	<!-- % = iterative number for each NM relation -->
+

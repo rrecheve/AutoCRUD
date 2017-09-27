@@ -1,3 +1,13 @@
+/**
+ * WebRatio Assistant v3.0
+ * 
+ * University of Extremadura (Spain) www.unex.es
+ * 
+ * Developers:
+ * 	- Carlos Aguado Fuentes (v2)
+ * 	- Javier Sierra Blázquez (v3.0)
+ * */
+
 package org.homeria.webratioassistant;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -8,16 +18,14 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
+	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.homeria.webratioassistant";
 
-	// The shared instance
+	/** The shared instance */
 	private static Activator plugin;
 
-	/**
-	 * The constructor
-	 */
 	public Activator() {
+
 	}
 
 	/*

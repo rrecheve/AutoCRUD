@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<PATTERN id="p2" name="Read (default)"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	 xsi:noNamespaceSchemaLocation="schema.xsd">
+	
+	<!-- PAGES SECTION-->
+	<PAGES>
+		<page id="ReadPage" name="Read Page" landmark="true" x="30" y="30">
+			<powerIndexUnit id="powerIndexUnit" name="PowerIndexUnit" x="0" y="0"/>
+			<dataUnit id="dataUnit" name="DataUnit" x="200" y="0"/>
+		</page>
+	</PAGES>		
+
+
+	<!-- LINKS SECTION -->
+	<LINKS>
+		<normalNavigationFlow id= "nnf1" name="Details" sourceId="powerIndexUnit" targetId="dataUnit"/>
+	</LINKS>
+
+</PATTERN>

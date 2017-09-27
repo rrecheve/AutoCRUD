@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<!-- Declaration -->
+
+	<!-- Elements -->
+	<xs:element name="page" type="pageType"/>
+	
+	<xs:element name="selectorUnit">
+		<xs:complexType>
+			<xs:attributeGroup ref="stdUnitAttributes"/>
+			<xs:attribute name="type">
+				<xs:simpleType>
+				 	<xs:restriction base="xs:token">
+				   		<xs:enumeration value="keyCondition"/>
+				   		<xs:enumeration value="roleCondition"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="parentId" type="xs:token"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:group name="contentUnits">
+		<xs:choice>
+   			<xs:element name="powerIndexUnit" type="stdUnitAttributesType"/>
+   			<xs:element name="dataUnit" type="stdUnitAttributesType"/>
+   			<xs:element name="entryUnit">
+				<xs:complexType>
+					<xs:attributeGroup ref="stdUnitAttributes"/>
+					<xs:attribute name="type">
+						<xs:simpleType>
+						 	<xs:restriction base="xs:token">
+						   		<xs:enumeration value="preloaded"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+   			<xs:element name="multiMessageUnit" type="stdUnitAttributesType"/>
+   			<xs:element name="noOpContentUnit" type="stdUnitAttributesType"/>
+   			<xs:element ref="selectorUnit"/>
+		</xs:choice>
+	</xs:group>
+
+	<xs:group name="links">
+		<xs:choice>
+   			<xs:element name="okLink" type="okKoType"/>
+   			<xs:element name="koLink" type="okKoType"/>
+   			<xs:element name="normalNavigationFlow">
+   				<xs:complexType>
+					<xs:attributeGroup ref="stdLinkAttributes"/>
+					<xs:attribute name="validate" type="xs:boolean"/>
+					<xs:attribute name="type">
+						<xs:simpleType>
+						 	<xs:restriction base="xs:token">
+						   		<xs:enumeration value="isNotNull"/>
+						    	<xs:enumeration value="fixedValue"/>
+						   		<xs:enumeration value="entryToCreate"/>
+						   		<xs:enumeration value="entryToUpdate"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+   			<xs:element name="dataFlow">
+   				<xs:complexType>
+					<xs:attributeGroup ref="stdLinkAttributes"/>
+					<xs:attribute name="type">
+						<xs:simpleType>
+						 	<xs:restriction base="xs:token">
+						    	<xs:enumeration value="preload"/>
+						    	<xs:enumeration value="entryToConnect"/>
+						    	<xs:enumeration value="entryToReconnect"/>
+						    	<xs:enumeration value="unitToEntry"/>
+						    	<xs:enumeration value="unitToEntryRole"/>
+						   		<xs:enumeration value="entryToCreate"/>
+						   		<xs:enumeration value="entryToUpdate"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:group>
+
+	<!-- Attributes -->
+
+	<xs:attribute name="id">    
+		<xs:simpleType>
+	        <xs:restriction base="xs:token">
+	            <xs:minLength value="1"/>
+	        </xs:restriction>
+	    </xs:simpleType>
+	</xs:attribute>
+	<xs:attribute name="name" type="xs:token"/>
+
+	<!-- AttributeGroups -->
+	<xs:attributeGroup name="stdLinkAttributes">
+		<xs:attribute ref="id" use="required"/>
+		<xs:attribute ref="name"/>
+		<xs:attribute name="sourceId" type="xs:token" use="required"/>
+		<xs:attribute name="targetId" type="xs:token" use="required"/>
+	</xs:attributeGroup>
+
+	<xs:attributeGroup name="stdUnitAttributes">
+		<xs:attribute ref="id" use="required"/>
+		<xs:attribute ref="name"/>
+		<xs:attributeGroup ref="coordinates"/>
+	</xs:attributeGroup>
+
+	<xs:attributeGroup name="coordinates">
+		<xs:attribute name="x" type="xs:token" use="required"/>
+		<xs:attribute name="y" type="xs:token" use="required"/>
+	</xs:attributeGroup>
+
+	<!-- Complex types -->
+	<xs:complexType name="stdUnitAttributesType">
+		<xs:attributeGroup ref="stdUnitAttributes"/>
+	</xs:complexType>
+
+	<xs:complexType name="stdLinkAttributesType">
+		<xs:attributeGroup ref="stdLinkAttributes"/>
+	</xs:complexType>
+
+	<xs:complexType name="pagesSectionType">
+		<xs:sequence>
+   			<xs:element ref="page" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="pageType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+   			<xs:element ref="page"/>
+   			<xs:element name="xor" type="xorType"/>
+			<xs:group ref="contentUnits"/>
+		</xs:choice>
+		<xs:attributeGroup ref="stdUnitAttributes"/>
+		<xs:attribute name="landmark" type="xs:boolean"/>
+		<xs:attribute name="default" type="xs:boolean"/>
+	</xs:complexType>
+
+	<xs:complexType name="xorType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+   			<xs:element ref="page"/>
+			<xs:group ref="contentUnits"/>
+		</xs:choice>
+		<xs:attributeGroup ref="stdUnitAttributes"/>
+	</xs:complexType>
+
+	<xs:complexType name="outsideunitsType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+   			<xs:element name="createUnit" type="stdUnitAttributesType"/>
+   			<xs:element name="deleteUnit" type="stdUnitAttributesType"/>
+   			<xs:element name="updateUnit" type="stdUnitAttributesType"/>
+   			<xs:element name="isNotNullUnit" type="stdUnitAttributesType"/>
+   			<xs:element ref="selectorUnit"/>
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="okKoType">
+		<xs:attributeGroup ref="stdLinkAttributes"/>
+		<xs:attribute name="message" type="xs:string"/>
+		<xs:attribute name="type">
+			<xs:simpleType>
+			 	<xs:restriction base="xs:token">
+			   		<xs:enumeration value="noCoupling"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="linksType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:group ref="links"/>
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="relSubsectionType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:group ref="links"/>
+			<xs:element ref="selectorUnit"/>
+   			<xs:element name="connectUnit" type="stdUnitAttributesType"/>
+   			<xs:element name="disconnectUnit" type="stdUnitAttributesType"/>
+   			<xs:element name="reconnectUnit" type="stdUnitAttributesType"/>
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="relationsType">
+		<xs:sequence>
+			<xs:element name="ALL" type="relSubsectionType" minOccurs="0"/>
+			<xs:element name="LAST" type="linksType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="nmrelationsType">
+		<xs:sequence>
+			<xs:element name="ALL" type="relSubsectionType" minOccurs="0"/>
+			<xs:element name="FIRST" type="linksType" minOccurs="0"/>
+			<xs:element name="REMAINING" type="linksType" minOccurs="0"/>
+			<xs:element name="LAST" type="linksType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+<!-- Root definition -->
+
+	<xs:element name="PATTERN">	
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="PAGES" type="pagesSectionType" minOccurs="0"/>
+				<xs:element name="OUTSIDEUNITS" type="outsideunitsType" minOccurs="0"/>
+				<xs:element name="LINKS" type="linksType" minOccurs="0"/>
+				<xs:element name="RELATIONS" type="relationsType" minOccurs="0"/>
+				<xs:element name="NMRELATIONS" type="nmrelationsType" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute ref="id" use="required"/>
+			<xs:attribute ref="name" use="required"/>
+		</xs:complexType>
+
+		<xs:unique name="uniqueID">
+			<xs:selector xpath=".//*" />
+			<xs:field xpath="@id" />
+		</xs:unique>
+	</xs:element>
+
+</xs:schema>
