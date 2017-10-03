@@ -68,7 +68,7 @@ Who is behind this project?
 ---------------------------
 * [Roberto Rodriguez-Echeverria](http://github.com/rrecheve/ "Roberto Rodriguez-Echeverria")
 * [Javier Sierra](http://github.com/JavierSierraBlazquez/ "Javier Sierra-Blazquez")
-* Juan C. Preciado
+* [Juan C. Preciado](http://github.com/jcpreciado/ "Juan C. Preciado")
 
 License
 ---
